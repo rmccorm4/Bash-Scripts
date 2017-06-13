@@ -7,13 +7,13 @@
 
 
 # Setup directory for all downloads if it doesn't already exist
-mkdir -p $HOME/tmp
-cd $HOME/tmp
+mkdir -p $HOME/bin
+cd $HOME/bin
 
 ### VLFEAT
 
 # Download vlfeat from their website if it's not already downloaded
-if [ ! -f "$HOME/tmp/vlfeat-0.9.20-bin.tar.gz" ]; then
+if [ ! -f "$HOME/bin/vlfeat-0.9.20-bin.tar.gz" ]; then
 	wget http://www.vlfeat.org/download/vlfeat-0.9.20-bin.tar.gz
 fi
 
@@ -30,26 +30,26 @@ mlpath=`matlab -e | sed -n 's/MATLAB=//p'`
 make MEX="$mlpath/bin/mex"
 
 # Testing VLFeat installation
-echo "run('vlfeat-0.9.20/toolbox/vl_setup')" > "$HOME/tmp/startup.m"
-echo "quit" >> "$HOME/tmp/startup.m"
-matlab -nodisplay -nodesktop -r "run $HOME/tmp/startup.m"
+echo "run('vlfeat-0.9.20/toolbox/vl_setup')" > "$HOME/bin/startup.m"
+echo "quit" >> "$HOME/bin/startup.m"
+matlab -nodisplay -nodesktop -r "run $HOME/bin/startup.m"
 
 echo
 echo "VLFeat successfully installed!"
 echo
 
 ### MATCONVNET
-cd $HOME/tmp
+cd $HOME/bin
 
 # Download if it doesn't exist
-if [ ! -f "$HOME/tmp/matconvnet-1.0-beta24.tar.gz" ]; then
+if [ ! -f "$HOME/bin/matconvnet-1.0-beta24.tar.gz" ]; then
 	wget http://www.vlfeat.org/matconvnet/download/matconvnet-1.0-beta24.tar.gz
 fi
 
 #tar -xvzf matconvnet-1.0-beta24.tar.gz
 cd matconvnet-1.0-beta24
 
-mcnpath="$HOME/tmp/matconvnet-1.0-beta24"
+mcnpath="$HOME/bin/matconvnet-1.0-beta24"
 # Check for GPU or CPU compilation
 echo
 echo "Enter if you want to compile for 'CPU' or 'GPU' (if you have it): "
@@ -74,17 +74,17 @@ elif [[ "$processor" == "GPU" ]] || [[ "$processor" == "gpu" ]]; then
 	echo "You will need root priveliges to setup gpu compilation!"
 	echo "Download Cuda 8.0 from https://developer.nvidia.com/cuda-downloads"
 	echo "Follow the instructions on their website for your operating system...\n"
-	echo "Move the cuda files into '$HOME/tmp'"
-	echo "Add the line 'export LD_LIBRARY_PATH=$HOME/tmp/cuda/lib64:$LD_LIBRARY_PATH' to your ~/.bashrc and then execute 'source ~/.bashrc'"
+	echo "Move the cuda files into '$HOME/bin'"
+	echo "Add the line 'export LD_LIBRARY_PATH=$HOME/bin/cuda/lib64:$LD_LIBRARY_PATH' to your ~/.bashrc and then execute 'source ~/.bashrc'"
 	echo "Download cudnn v5.1 for Cuda 8.0 from https://developer.nvidia.com/rdp/cudnn-download"
-	echo "Move the '---/cudnn/lib64' files into '$HOME/tmp/cuda/lib64' and '---/cudnn/include' files into '---/cuda/include'"
+	echo "Move the '---/cudnn/lib64' files into '$HOME/bin/cuda/lib64' and '---/cudnn/include' files into '---/cuda/include'"
 	
 	echo "Have you downloaded both Cuda 8.0 and cudnn v5.1 for Cuda 8.0? Enter [y/n]: "
 	read answer
 
 	if [[ "$answer" -eq "y" ]]; then
 		echo "addpath matlab" > gpu_setup.m
-		echo "vl_compilenn('enableGpu', true, 'enableCudnn', true, 'cudaRoot', '$HOME/tmp/cuda', 'cudnnRoot', '$HOME/tmp/cudnn'" >> gpu_compile.m
+		echo "vl_compilenn('enableGpu', true, 'enableCudnn', true, 'cudaRoot', '$HOME/bin/cuda', 'cudnnRoot', '$HOME/bin/cudnn'" >> gpu_compile.m
 		echo "vl_setupnn'" >> gpu_setup.m
 		echo "vl_testnn('gpu', true)" >> gpu_setup.m
 		matlab -nodisplay -nodesktop -r "run 'gpu_setup.m'"
